@@ -16,7 +16,7 @@ type GeneralPromotion struct {
 }
 
 func (gp GeneralPromotion) Apply(amount int) bool {
-	if gp.ThresholdAmount > amount {
+	if gp.ThresholdAmount >= amount {
 		return false
 	}
 
@@ -57,14 +57,14 @@ func (pp ProductPromotion) Apply(products product.Products) bool {
 }
 
 func (pp ProductPromotion) Discount(products product.Products) int {
-	var discount int
+	var discount float64
 	if pp.Apply(products) {
 		for _, product := range products {
 			if pp.ProductCode == product.Code {
-				discount += int(math.Round((float64(pp.DiscountPercentage) / 100.0) * float64(product.Price)))
+				discount += math.Round((float64(pp.DiscountPercentage) / 100.0) * float64(product.Price))
 			}
 		}
 	}
 
-	return discount
+	return int(discount)
 }
