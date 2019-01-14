@@ -22,11 +22,11 @@ func TestGeneralPromotionDiscount(t *testing.T) {
 	gp := promotion.GeneralPromotion{ThresholdAmount: 50, DiscountPercentage: 25}
 
 	if gp.Discount(100) != 25 {
-		t.Error("expected promotion discount to be 25")
+		t.Errorf("expected promotion discount to be 25, but it was %v", gp.Discount(100))
 	}
 
 	if gp.Discount(10) != 0 {
-		t.Error("expected promotion discount to be 0")
+		t.Errorf("expected promotion discount to be 0, but it was %v", gp.Discount(10))
 	}
 }
 
@@ -58,12 +58,18 @@ func TestProductPromotionDiscount(t *testing.T) {
 	pp := promotion.ProductPromotion{ProductCode: "001", MinProductCount: 2, DiscountPercentage: 10}
 
 	if pp.Discount(products) != 0 {
-		t.Error("expected promotion discount to be 0")
+		t.Errorf("expected promotion discount to be 0, but it was %v", pp.Discount(products))
 	}
 
 	products = append(products, product.Product{Code: "001", Name: "Kids T-shirt", Price: 1000})
 
 	if pp.Discount(products) != 200 {
-		t.Error("expected promotion discount to be 200")
+		t.Errorf("expected promotion discount to be 200, but it was %v", pp.Discount(products))
+	}
+
+	pp = promotion.ProductPromotion{ProductCode: "001", MinProductCount: 2, DiscountAmount: 50}
+
+	if pp.Discount(products) != 100 {
+		t.Errorf("expected promotion discount to be 100, but it was %v", pp.Discount(products))
 	}
 }

@@ -40,6 +40,7 @@ type ProductPromotion struct {
 	ProductCode        string
 	MinProductCount    int
 	DiscountPercentage int
+	DiscountAmount     int
 }
 
 func (pp ProductPromotion) Apply(products product.Products) bool {
@@ -57,14 +58,18 @@ func (pp ProductPromotion) Apply(products product.Products) bool {
 }
 
 func (pp ProductPromotion) Discount(products product.Products) int {
-	var discount float64
+	var discount int
 	if pp.Apply(products) {
 		for _, product := range products {
 			if pp.ProductCode == product.Code {
-				discount += math.Round((float64(pp.DiscountPercentage) / 100.0) * float64(product.Price))
+				if pp.DiscountAmount != 0 {
+					discount += pp.DiscountAmount
+				} else if pp.DiscountPercentage != 0 {
+					discount += int(math.Round((float64(pp.DiscountPercentage) / 100.0) * float64(product.Price)))
+				}
 			}
 		}
 	}
 
-	return int(discount)
+	return discount
 }
